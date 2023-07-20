@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <form id="image-form" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" />
+        <input type="submit" value="Plot" />
+    </form>
+    <div id="plot-container"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#image-form').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+                $.ajax({
+                    type: 'POST',
+                    url: '/upload',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        var plotData = response.plot_data;
+                        var imgHtml = '<img src="data:image/png;base64,' + plotData + '" alt="Histogram" />';
+                        $('#plot-container').html(imgHtml);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
